@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const router = express.Router();
+const path = require('path');
 
 const { loadProducts } = require('./productRouter');
 const { saveProducts } = require('./productRouter');
@@ -10,7 +11,8 @@ function generateUniqueId() {
     return Date.now(); 
 }
 
-const cartsDBPath = './carrito.json'; 
+const cartsDBPath = path.join(__dirname, '../carritos.json');
+
 const loadCarts = () => {
     try {
         const data = fs.readFileSync(cartsDBPath, 'utf8');
@@ -59,8 +61,13 @@ router.post('/', (req, res) => {
 
     saveCarts(cartsDB);
 
+    const io = req.app.get('socketio');
+        io.emit('carirtoCreado', nuevoProducto);
+
     res.status(201).json({ message: 'Carrito creado correctamente', cart: newCart });
 });
+
+
 
 
 
@@ -96,6 +103,8 @@ router.post('/:cid/product/:pid', (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     const quantity = req.body.quantity || 1;
+
+    const io = req.app.get('socketio');
 
     const cartsDB = loadCarts
 

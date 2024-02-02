@@ -1,19 +1,5 @@
 [
   {
-    "id": 1705856495165,
-    "title": "Nuevo Producto",
-    "description": "Descripción del nuevo producto",
-    "code": "ABC123",
-    "price": 19.99,
-    "status": true,
-    "stock": 50,
-    "category": "Electrónicos",
-    "thumbnails": [
-      "url1",
-      "url2"
-    ]
-  },
-  {
     "id": 1705856576114,
     "title": "Nuevo Producto",
     "description": "Descripción del nuevo producto",

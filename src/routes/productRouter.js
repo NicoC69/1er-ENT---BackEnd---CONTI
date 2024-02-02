@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
+const path = require('path');
 
 
 // generar un ID único
@@ -8,7 +9,7 @@ function generateUniqueId() {
     return Date.now(); 
 }
 
-const productsDBPath = './productos.json';
+const productsDBPath = path.join(__dirname, '../productos.json');
 
 const loadProducts = () => {
     try {
@@ -78,9 +79,14 @@ router.post('/', (req, res) => {
             productsDB.push(newProduct);
                 
             saveProducts(productsDB);
-                
+            
+            const io = req.app.get('socketio');
+                io.emit('productoCreado', nuevoProducto);
+
             res.status(201).json({ message: 'Producto agregado correctamente', product: newProduct });
         });
+
+        
 
 
 // actualizar un producto por ID
@@ -115,6 +121,9 @@ router.delete('/:pid', (req, res) => {
     Array.prototype.push.apply(productsDB, updatedProductsDB);
 
     saveProducts(updatedProductsDB);
+
+    const io = req.app.get('socketio');
+        io.emit('productoEliminado', idProductoEliminado);
 
     res.json({ message: 'Producto eliminado correctamente' });
 });
